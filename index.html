@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Aula de Aprendizaje en Investigación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..700&family=Mulish:wght@400..800&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --paper:#FAFCFA;--paper-2:#EEF3EF;--ink:#10201A;--ink-2:#33473E;--muted:#5E706A;--node:#076633;--spine:#A9C2B3;--ember:#9C5A26;
+  --rule:#C9D8CF;--rule-soft:#E4ECE7;--canvas:#FFFFFF;--sh:0 1px 2px rgba(16,32,26,.06),0 10px 28px rgba(16,32,26,.08);
+  --f-display:"EB Garamond","Adobe Garamond Pro",Garamond,Georgia,serif;
+  --f-body:"Mulish","Avenir Next",Avenir,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color-scheme:light}
+[data-p="0"]{--acc:#076633;--acc-soft:#E6F2EA}
+[data-p="1"]{--acc:#0B6B7A;--acc-soft:#E2F1F3}
+[data-p="2"]{--acc:#4A55A2;--acc-soft:#E8EAF6}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;overflow:hidden;background:#FFFFFF}
+body{height:100vh;height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;color:var(--ink);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+h1,h2,p,dl,dd,ul{margin:0}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+a{color:var(--node)}
+.bar{flex:none;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule-soft)}
+.bar-in{padding:.6rem 20px;display:flex;align-items:center;gap:.6rem 1.5rem;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:.7rem;margin-right:auto;min-width:0}
+.brand img{height:24px;width:auto;display:block}
+.vr{flex:none;width:1px;height:26px;background:var(--rule)}
+.brand b{display:block;font:600 1.02rem/1.15 var(--f-display)}
+.brand small{display:block;font-size:.72rem;color:var(--muted)}
+.filters{display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:.45rem;font:600 .8rem var(--f-body);padding:.4rem .8rem;border-radius:999px;border:1.5px solid var(--rule);background:#fff;color:var(--ink-2);cursor:pointer}
+.chip b{font-weight:700;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--node);background:var(--paper-2);color:var(--ink)}
+.dot{flex:none;display:inline-block;width:10px;height:10px;border-radius:50%;margin-top:.4rem}
+.dot.c{background:var(--node)}
+.dot.p{border:2px solid var(--ember)}
+.chip .dot{margin:0;width:9px;height:9px}
+
+.wrap{position:relative;flex:1;min-height:0}
+.vp{position:absolute;inset:0;overflow:hidden;touch-action:none;cursor:grab;background-color:var(--canvas)}
+.vp.grab{cursor:grabbing;user-select:none}
+#board{position:absolute;left:0;top:0;transform-origin:0 0}
+.stage{position:relative;width:1640px;padding-bottom:40px}
+.links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.links{transition:opacity .35s}.links line{stroke-width:1.8}
+.root{padding-top:48px;margin-bottom:110px}
+.stage[data-v="n"] .root{margin-bottom:64px}
+.rootoval{width:780px;margin:0 auto;text-align:center;background:#fff;border:2px solid var(--node);border-radius:50%;padding:48px 88px;box-shadow:var(--sh)}
+h1{font:500 3.3rem/1.05 var(--f-display);letter-spacing:-.015em;max-width:14ch;margin:0 auto;text-wrap:balance}
+.rootoval p{max-width:34ch;margin:.9rem auto 0;color:var(--ink-2);font-size:.92rem;line-height:1.5}
+
+.cols{display:grid;gap:90px;align-items:start}
+.proc{min-width:0}
+.pnode,.mx-r{min-height:100px;display:flex;flex-direction:column;justify-content:center;text-align:center;background:var(--acc);color:#fff;border-radius:20px;padding:1rem 1.2rem;box-shadow:var(--sh);font:600 1.6rem/1.15 var(--f-display)}
+.pnode small,.mx-r small{margin-top:.3rem;font:500 .8rem var(--f-body);opacity:.9}
+.subrow{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:14px;margin-top:64px}
+.oval{font:inherit;color:var(--ink);cursor:pointer;border:1.5px solid var(--acc);border-radius:50%;background:#fff;min-height:104px;padding:12px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.15rem;box-shadow:0 1px 2px rgba(16,32,26,.06)}
+.oval:hover{background:var(--acc-soft)}
+.oval .on{font:600 1.06rem/1.15 var(--f-display);overflow-wrap:break-word;max-width:100%}
+.oval .oc{font:600 .7rem var(--f-body);color:var(--muted)}
+.oval[aria-expanded="true"]{background:var(--acc);color:#fff;box-shadow:var(--sh)}
+.oval[aria-expanded="true"] .oc{color:#fff;opacity:.9}
+.panel{margin-top:64px}
+.empty{padding:.5rem 1rem;color:var(--muted);font-size:.88rem}
+.leaves{list-style:none;padding:0;display:grid;gap:8px}
+summary{list-style:none;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+.leaf>details>summary{display:flex;gap:.6rem;align-items:flex-start;padding:.6rem 1.35rem;border:1.5px solid var(--acc);border-radius:999px;background:#fff;font-size:.88rem;line-height:1.35;overflow-wrap:break-word;box-shadow:0 1px 1px rgba(16,32,26,.04)}
+.leaf>details>summary>span{min-width:0}
+.leaf small{display:block;margin-top:.1rem;color:var(--muted);font-size:.72rem;font-weight:600}
+.leaf>details>summary:hover{background:var(--acc-soft)}
+.leaf>details[open]>summary{background:var(--acc-soft);font-weight:700}
+.ficha{margin:6px 6px 6px 20px;padding:12px 14px;background:#fff;border:1px solid var(--rule-soft);border-left:3px solid var(--acc);border-radius:4px 14px 14px 4px;box-shadow:0 1px 2px rgba(16,32,26,.05),0 6px 16px rgba(16,32,26,.06);font-size:.88rem;line-height:1.5;cursor:auto}
+.desc{margin-bottom:.6rem;color:var(--ink-2)}
+.desc.b{font-weight:700;color:var(--ink)}
+.desc strong{color:var(--ink)}
+.ficha dl{display:grid;gap:.55rem;margin-top:.75rem}
+.ficha dl>div{display:grid;grid-template-columns:6.2rem minmax(0,1fr);gap:.6rem}
+.ficha dt{color:var(--muted);font-weight:700;font-size:.8rem;padding-top:.1rem}
+.ficha dd.none{color:var(--muted);font-style:italic}
+.ficha dd.st{display:flex;align-items:center;gap:.5rem}
+.ficha dd.st .dot{margin:0}
+
+.mx{display:grid;grid-template-columns:200px repeat(3,minmax(0,1fr));gap:52px 22px;align-items:start}
+.mx-h{display:flex;align-items:center;gap:.9rem;background:#fff;border:1.5px solid var(--rule);border-radius:999px;padding:.9rem 1.6rem;box-shadow:var(--sh)}
+.mx-h b{font:600 1.7rem/1 var(--f-display)}
+.mx-h small{margin-left:auto;font-size:.78rem;font-weight:600;color:var(--muted)}
+.bars{display:inline-flex;align-items:flex-end;gap:3px}
+.bars i{width:5px;border-radius:2px;background:var(--rule)}
+.bars i:nth-child(1){height:10px}.bars i:nth-child(2){height:15px}.bars i:nth-child(3){height:20px}
+.bars i.on{background:var(--node)}
+.mx-r{text-align:left;font-size:1.4rem}
+.mx-c{min-width:0}
+.ghosts{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;z-index:5}.ghosts>*{position:absolute;margin:0;list-style:none}
+.stage.ghosting .leaf,.stage.ghosting .pnode,.stage.ghosting .mx-r,.stage.ghosting .mx-h,.stage.ghosting .oval{visibility:hidden}
+
+.dock,.zoom{position:absolute;bottom:22px;z-index:10;display:flex;align-items:center;background:rgba(255,255,255,.88);backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(16,32,26,.08);box-shadow:0 10px 34px rgba(16,32,26,.16);border-radius:999px;padding:5px}
+.dock{left:50%;transform:translateX(-50%);gap:4px}
+.zoom{right:20px;gap:2px}
+.seg,.zb{font:700 .9rem var(--f-body);border:0;background:transparent;color:var(--ink-2);cursor:pointer;border-radius:999px}
+.seg{padding:.65rem 1.5rem}
+.seg[aria-pressed="true"]{background:var(--node);color:#fff}
+.zb{min-width:36px;height:36px;padding:0 .7rem;font-size:1.1rem}
+.zb:hover{background:var(--paper-2)}
+.zb.t{font-size:.8rem}
+#zl{min-width:3.2rem;text-align:center;font:700 .8rem var(--f-body);color:var(--muted)}
+.hint{position:absolute;left:20px;bottom:30px;font-size:.75rem;color:var(--muted);pointer-events:none}
+@media (pointer:coarse),(max-width:760px){.hint{display:none}}
+@media (max-width:640px){.zoom{right:12px;bottom:84px}.bar-in{padding:.5rem 14px}}
+</style>
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <div class="brand"><img src="data:image/png;base64,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" alt="Universidad de Antioquia" width="80" height="24"><span class="vr" aria-hidden="true"></span><span><b>Vicerrectoría de Investigación</b><small>Universidad de Antioquia</small></span></div>
+  <div class="filters" id="filters" role="group" aria-label="Filtrar por estado"></div>
+</div></header>
+<div class="wrap">
+  <div class="vp" id="vp">
+    <div id="board"><div class="stage" id="stage" data-v="p">
+      <svg class="links" id="links" aria-hidden="true"></svg>
+      <section class="root"><div class="rootoval">
+        <h1>Aula de Aprendizaje en Investigación</h1>
+        <p id="sub"></p>
+      </div></section>
+      <div class="cols" id="view-p"></div>
+      <div class="mx" id="view-n" hidden></div>
+    </div></div>
+  </div>
+  <div class="hint">Arrastra para mover · Ctrl + rueda para hacer zoom</div>
+  <nav class="zoom" aria-label="Zoom"><button class="zb" id="zo" type="button" title="Alejar" aria-label="Alejar">−</button><span id="zl">100%</span><button class="zb" id="zi" type="button" title="Acercar" aria-label="Acercar">+</button><button class="zb t" id="zf" type="button" title="Ajustar a la pantalla">Ajustar</button></nav>
+  <nav class="dock" aria-label="Vista"><button class="seg" type="button" data-v="p" aria-pressed="true">Procesos</button><button class="seg" type="button" data-v="n" aria-pressed="false">Niveles</button></nav>
+</div>
+<script>
+(function(){
+const DATA=[{"name": "Democratización del Conocimiento", "subs": [{"name": "Apropiación Social del Conocimiento", "items": [{"t": "Curso Introducción a la Apropiación Social de Conocimiento", "d": [], "r": "Kamila & Maria Paulina", "a": ["Bibliotecología y Ude@"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "c"}, {"t": "Curso Ciencia para todos", "d": [], "r": "Kamila & Maria Paulina", "a": ["Unidades academicas por área"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "c"}, {"t": "Elementos trazadores de la Investigación Acción Participativa como una estrategia de ASC", "d": [], "r": "Kamila & Maria Paulina", "a": ["Facultad de Ciencias Sociales y Humanas"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "p"}, {"t": "Pautas para registrar productos de ASC y CPC en el modelo de medición", "d": [], "r": "Kamila & Maria Paulina", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "Vocería activa alrededor del conocimiento (elementos conceptuales del periodismo científico)", "d": [], "r": "Kamila & Maria Paulina", "a": ["Universidad del Rosario"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "Diálogo horizontal de saberes", "d": [], "r": "Kamila & Maria Paulina", "a": ["Facultad de Ciencias Sociales y Humanas"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "Participación para la incidencia pública", "d": [], "r": "Kamila & Maria Paulina", "a": ["Unidad de Incidencia Facultad Nacional de Salud Pública"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "p"}, {"t": "Tres marcos de Política de Innovación", "d": [{"x": "I+D, Sistemas de Innovación y Cambio Transformativo.", "b": false}], "r": "Kamila & Maria Paulina", "a": ["División de Innovación - Vicerrectoría de Extensión"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "p"}, {"t": "Creación y cuidado de redes multiactoriales", "d": [], "r": "Kamila & Maria Paulina", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "p"}, {"t": "Investigación-creación una oportunidad para la ASC (Cine, teatro, arte)", "d": [], "r": "Kamila & Maria Paulina", "a": ["Facultad de Artes"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "Centros de ciencia y ASC", "d": [], "r": "Kamila & Maria Paulina", "a": ["Museo Univeristario"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "p"}, {"t": "Cómo generar un insumo de política pública y normativa a través del conocimiento", "d": [], "r": "Kamila & Maria Paulina", "a": ["Unidad de Incidencia Facultad Nacional de Salud Pública"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "p"}, {"t": "Manejo de la IA para la ASC", "d": [], "r": "Kamila & Maria Paulina", "a": ["Innovación - Gestión tecnologica"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "El rol del conocimiento en la sociedad", "d": [], "r": "Kamila & Maria Paulina", "a": ["Facultad de filosofía"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "p"}, {"t": "Escritura de proyectos de ASC", "d": [], "r": "Kamila & Maria Paulina", "a": ["Unidad Institucional de Gestión de Proyectos (UIGP)"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}]}, {"name": "Ciencia Abierta", "items": [{"t": "Introducción a la Ciencia Abierta: fundamentos y principales conceptos", "d": [{"x": "Panorama general de la Ciencia Abierta, sus fundamentos, principios y principales conceptos.", "b": false}], "r": "Ana María", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "p"}, {"t": "Publicación en acceso abierto", "d": [{"x": "Cómo identificar revistas de acceso abierto sin APC y elegir dónde publicar.", "b": false}], "r": "Ana María", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "p"}, {"t": "Aprobación de artículos en acceso abierto mediante acuerdos transformativos", "d": [{"x": "Procedimiento para solicitar y gestionar la publicación en acceso abierto mediante acuerdos institucionales con editoriales.", "b": false}], "r": "Ana María", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Búsqueda y reutilización de datos de investigación", "d": [{"x": "Cómo encontrar, evaluar y aprovechar datos disponibles en repositorios y fuentes abiertas.", "b": false}], "r": "Ana María", "a": ["Sistema de Bibliotecas - Repositorio de Datos de Investigación"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "p"}, {"t": "Gestión de datos de investigación", "d": [{"x": "Principios básicos para organizar, documentar, almacenar y compartir datos de investigación.", "b": false}], "r": "Ana María", "a": ["Sistema de Bibliotecas - Repositorio de Datos de Investigación"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "c"}, {"t": "Plan de Gestión de Datos de Investigación", "d": [{"x": "Cómo elaborar un plan para organizar, gestionar, preservar y compartir los datos durante y después de un proyecto.", "b": false}], "r": "Ana María", "a": ["Sistema de Bibliotecas - Repositorio de Datos de Investigación"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "c"}, {"t": "Licencias y derechos de autor", "d": [{"x": "Cómo elegir licencias y gestionar los derechos para compartir y reutilizar productos de investigación.", "b": false}], "r": "Ana María", "a": ["Sistema de Bibliotecas - Repositorio de Datos de Investigación", "Oficina de Transferencia de Resultados de Investigación"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "c"}, {"t": "Reproducibilidad y transparencia de la investigación", "d": [{"x": "Prácticas para documentar y compartir métodos, datos y procesos de investigación.", "b": false}], "r": "Ana María", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "p"}, {"t": "Registro de productos en el repositorio institucional", "d": [{"x": "Cómo depositar y registrar artículos y otros productos de investigación en el repositorio institucional.", "b": false}], "r": "Ana María", "a": ["Sistema de Bibliotecas - Repositorio Institucional"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Sistema de Revistas de la Universidad de Antioquia", "d": [{"x": "Cómo explorar y aprovechar el Sistema de Revistas de la UdeA para localizar artículos científicos y académicos confiables para trabajos, tesis y proyectos de investigación.", "b": false}], "r": "Sandra", "a": ["Sistema de Bibliotecas - Sistema de Revistas: https://www.udea.edu.co/wps/portal/udea/web/inicio/sistema-bibliotecas/programas-eventos/capacitaciones-recursos-informacion"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "p"}, {"t": "Sistema de Revistas UdeA: Preparación de archivos en WORD para la marcación XML-JATS", "d": [], "r": "Sandra", "a": ["Sistema de Revistas"], "an": "", "p": "Editores", "l": "AS", "s": "c"}, {"t": "Sistema de Revistas UdeA: Metadatos: buenas prácticas para la indexación y gestión", "d": [], "r": "Sandra", "a": ["Sistema de Revistas - biblioteca"], "an": "", "p": "Editores", "l": "AS", "s": "c"}, {"t": "Sistema de Revistas UdeA: Capacitación en software de gestión editorial OJS", "d": [], "r": "Sandra", "a": ["Sistema de Revistas - biblioteca"], "an": "", "p": "Editores", "l": "AS", "s": "c"}, {"t": "Sistema de Revistas UdeA: Capacitación en software Crosscheck- Ithenticate para control de plagio en articulos", "d": [], "r": "Sandra", "a": ["Sistema de Revistas - biblioteca"], "an": "", "p": "Editores", "l": "AS", "s": "p"}]}, {"name": "Comunicación Pública de la Ciencia", "items": [{"t": "Comunicar la ciencia para públicos no especializados (Lectura de contexto y narrativas para la comunicación de la ciencia", "d": [], "r": "Kamila & Maria Paulina", "a": ["Facultad de Comunicaciones"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "p"}, {"t": "Producción de contenido digital (audiovisual, sonoro y gráfico) para la creación e innovación", "d": [], "r": "Kamila & Maria Paulina", "a": ["Facultad de Comunicaciones"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "Desarrollo de páginas web, aplicativos o plataformas interactivas (juegos) para compartir el conocimiento", "d": [], "r": "Kamila & Maria Paulina", "a": ["Facultad de Ingeniería"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}]}]}, {"name": "Investigación a lo largo de la vida", "subs": [{"name": "Semilleros de Investigación", "items": [{"t": "Introduccción a la estrategia de Semilleros de Investigación - Versión UdeA", "d": [], "r": "Daniel Carvajal Tabares y Diana", "a": ["Ude@"], "an": "", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "c"}, {"t": "Introduccción a la estrategia de Semilleros de Investigación - Versión Centros Escolares de Investigación", "d": [], "r": "Daniel Carvajal Tabares y Diana", "a": ["Ude@"], "an": "", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "c"}]}, {"name": "Transversal", "items": [{"t": "Competencias en Ciencia Abierta, Datos y Tecnologías Emergentes", "d": [{"x": "Gestión de datos de investigación (RDM)", "b": true}, {"x": "estructuración de bases de datos bajo principios FAIR usar repositorios abiertos (como Zenodo o el repositorio institucional de la UdeA)", "b": false}, {"x": "Herramientas analíticas y programación", "b": true}, {"x": "Python o R y el uso ético de Inteligencia Artificial para la revisión sistemática de literatura y aceleración del descubrimiento científico", "b": false}, {"h": "Herramientas Digitales e IA Responsable", "x": "Uso de software de acceso abierto para análisis cualitativo/cuantitativo (R, Python, MaxQDA) y directrices éticas para el uso de Inteligencia Artificial en la fase de revisión de literatura.", "b": false}], "r": "Ana, Kamila, Maria Paulina y Diana", "a": ["Biblioteca, Ude@"], "an": "", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "p"}, {"t": "Formulación Estratégica de Proyectos y Financiación Local e Internacional", "d": [{"x": "Diseño metodológico avanzado y presupuestación", "b": true}, {"x": "Aprender a estructurar propuestas competitivas capaces de atraer capital privado o fondos de cooperación internacional", "b": false}, {"x": "Marco lógico y metodologías ágiles", "b": true}, {"x": "Habilidades para gestionar cronogramas complejos, hitos de entrega y administración del riesgo científico dentro del grupo de investigación", "b": false}, {"h": "Formulación Estratégica de Propuestas (Grant Writing)", "x": "Capacitación en cómo buscar financiación externa (bancos de proyectos internacionales, ONGs, convenios bilaterales de Minciencias) y cómo estructurar un presupuesto con enfoque de marco lógico", "b": false}], "r": "Mauricio Diana y Sandra", "a": ["Innovación"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "p"}, {"t": "Escritura científica en inglés (Academic Writing)", "d": [{"x": "formación técnica para redactar artículos estructurados (papers) con la rigurosidad que exigen las revistas indexadas de alto impacto", "b": false}, {"h": "Laboratorio de Escritura Científica Internacional (Academic Writing)", "x": "Talleres de co-creación y escritura de artículos en inglés enfocados en la estructura estandarizada (IMRyD) exigida por revistas de alto impacto (Scopus/WoS).", "b": false}], "r": "Diana y Sandra", "a": ["Escuela de Idiomas"], "an": "", "p": "Semilleristas y Jóvenes Investigadores", "l": "JA", "s": "p"}, {"t": "Habilidades blandas de liderazgo y co-creación", "d": [{"x": "resolución de conflictos, mentoría de pares (para coordinar estudiantes de semilleros menores) y trabajo en equipos interdisciplinares", "b": false}, {"x": "Integridad científica y bioética", "b": true}, {"x": "Comprensión profunda sobre propiedad intelectual, patentes, comités de ética con humanos/animales y los sesgos en la publicación científica", "b": false}, {"h": "Seminario de Integridad Científica y Bioética", "x": "Casos prácticos sobre plagio, autoría responsable, sesgos de publicación y radicación de proyectos ante los comités de bioética de la universidad", "b": false}], "r": "Diana, Gloria, Mauricio", "a": ["Innovación, Gestión Tecnológica"], "an": "", "p": "Semilleristas y Jóvenes Investigadores", "l": "JA", "s": "p"}, {"t": "Mentoría de Pares y Liderazgo de Semilleros", "d": [{"x": "Capacitar al Joven Investigador para que actúe como colíder de los Semilleros de Investigación de pregrado de la UdeA, entrenándolo en pedagogía de la investigación, resolución de conflictos y trabajo en equipo", "b": false}], "r": "Diana, Daniel", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "JA", "s": "p"}, {"t": "Construcción de planes de trabajo basados en actividades de formación en investigación", "d": [], "r": "Diana", "a": [], "an": "Sin registro", "p": "Tutores/ investigadores", "l": "AS", "s": "c"}, {"t": "Nómina y reportes de pago", "d": [], "r": "Diana", "a": [], "an": "Sin registro", "p": "Tutores/ investigadores", "l": "AS", "s": "c"}, {"t": "Trámites de convenios de pasantía", "d": [], "r": "Diana", "a": ["Talento Humano, Gestión Informática"], "an": "", "p": "Centros de Investigación", "l": "S", "s": "c"}, {"t": "Manual de responsabilidades del interventor", "d": [], "r": "Diana y Mauricio", "a": ["Jurídica"], "an": "", "p": "Tutores/ investigadores", "l": "AS", "s": "p"}, {"t": "Redes sociales en investigación", "d": [{"x": "cómo utilizar las redes sociales de manera estratégica para divulgar resultados, aumentar la visibilidad de los proyectos y fortalecer la comunicación y apropiación social del conocimiento.", "b": false}], "r": "Sergio Gómez Molina", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "c"}, {"t": "Tendencias globales en investigación", "d": [{"x": "espacios para conocer y analizar tendencias emergentes, enfoques, tecnologías y desafíos que están orientando la investigación a nivel nacional e internacional.", "b": false}], "r": "Sergio Gómez Molina", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "c"}, {"t": "ECII – Encuentros de Creación, Investigación e Innovación", "d": [{"x": "espacios para compartir experiencias, resultados y desarrollos de investigación, creación e innovación, promoviendo el intercambio de conocimiento y la articulación entre investigadores.", "b": false}], "r": "Sergio Gómez Molina", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JAS", "s": "c"}, {"t": "Análisis de la información", "d": [{"x": "Enseñar a los estudiantes estrategias de análisis estadístico y cualitativo.", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "c"}, {"t": "Escritura científica", "d": [{"x": "Enseñar las estrategias de cómo realizar textos científicos", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "c"}, {"t": "Formulación de proyectos", "d": [{"x": "Capacitar a los investigadores de herramientas administrativas y académicas para la presentación de proyectos y la búsqueda activa de convocatorias", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "JA", "s": "c"}, {"t": "Herramientas computacionales para la investigacion", "d": [{"x": "Emplear herramientas informáticas y computacionales para fortalecer la investigación aplicada", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "c"}, {"t": "Innovación Social para la Investigación", "d": [{"x": "Desarrollar capacidades para diseñar y aplicar enfoques de innovación social en procesos de investigación orientados a la solución de problemáticas reales.", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "A", "s": "c"}, {"t": "Metodología de la investigación", "d": [{"x": "Introducir las perspectivas metodológicas de investigación, los criterios para su elección y aplicación.", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "c"}, {"t": "Métodos de investigación participativa", "d": [{"x": "Comprender y aplicar los fundamentos teóricos, políticos, metodológicos y éticos de la investigación participativa", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": [], "an": "Sin registro", "p": "Semilleristas y Jóvenes Investigadores", "l": "A", "s": "c"}, {"t": "Desarrollo de habilidades para la Investigación Científica", "d": [{"x": "Introducir las perspectivas metodológicas de investigación, los criterios para su elección y aplicación.", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": ["Ude@"], "an": "", "p": "Semilleristas y Jóvenes Investigadores", "l": "J", "s": "c"}, {"t": "Innovación y emprendimiento para investigadores", "d": [{"x": "Capacitar a los estudiantes sobre los tipos de innovación, el trabajo en equipo, las comunicaciones efectivas y el pensamiento creativo.", "b": false}], "r": "Daniel Carvajal Tabares y Diana", "a": ["Unidad de Innovación"], "an": "", "p": "Semilleristas y Jóvenes Investigadores", "l": "A", "s": "c"}]}]}, {"name": "Gestión de la Investigación", "subs": [{"name": "Planeación", "items": [{"t": "Permisos ambientales", "d": [], "r": "Gloria", "a": ["Comité de ética"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Etica en investigación", "d": [], "r": "Gloria", "a": ["Comité de ética"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JAS", "s": "c"}, {"t": "Registro de proyectos en el sistema de información (gestión de proyectos)", "d": [], "r": "Mauricio y Diana", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "c"}, {"t": "Proyectos inscritos (gestión de proyectos)", "d": [{"x": "Primer Proyecto (gestiòn de proyectos)", "b": false}], "r": "Mauricio y Diana", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "p"}, {"t": "Alineación Estratégica y Normativa CODI", "d": [{"x": "Formulación Científica y Rutas de Financiación UIGP", "b": false}, {"x": "Estrategia de Redes y Alianzas", "b": false}, {"x": "El Ecosistema Digital: Plataformas Obligatorias (SIIU, SSAF (Sistema de Soporte Administrativo y Financiero) / Portal Universitario, Gestión del CvLAC y GrupLAC, SIPE, SSOFI etc", "b": false}], "r": "Diana", "a": ["CODI, CT, Centros, Oficina de proyectos", "Innovación y gestión tecnológica"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "p"}, {"t": "Planeación presupuestal de proyectos de investigación", "d": [{"x": "elementos clave para estructurar y administrar el presupuesto de un proyecto, incluyendo la creación del proyecto presupuestal, el elemento PEP y las responsabilidades asociadas a la ordenación del gasto.", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Financiera"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "c"}, {"t": "Seguridad y salud en actividades de investigación", "d": [{"x": "orientaciones para la protección de investigadores, docentes y estudiantes durante el desarrollo de actividades de CTeI, especialmente aquellas que implican trabajo de campo, laboratorio u otros escenarios con riesgos asociados.", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Talento Humano"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "c"}, {"t": "Convenios y donaciones para proyectos de investigación", "d": [{"x": "aspectos básicos para la gestión de convenios y donaciones nacionales e internacionales relacionados con investigación, investigación-extensión y comodatos de equipos.", "b": false}], "r": "Sergio Gómez Molina", "a": ["Dirección Júridica"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "c"}, {"t": "Gestión documental de proyectos de investigación", "d": [{"x": "organización, registro y conservación de la documentación generada durante el proyecto mediante los sistemas institucionales establecidos, como OnBase y SAP", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Gestión Documental"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Gestión de productos de innovación desde la formulación del proyecto", "d": [{"x": "incorporación de los resultados de innovación desde el diseño de la investigación, considerando niveles de madurez tecnológica (TRL), presupuesto, seguimiento y cierre", "b": false}], "r": "Sergio Gómez Molina", "a": ["OTRI"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "c"}, {"t": "Identificación y gestión de activos de conocimiento", "d": [{"x": "reconocimiento de los resultados de investigación que pueden constituirse en activos de conocimiento y su gestión como parte de los compromisos y requisitos para el cierre del proyecto.", "b": false}], "r": "Sergio Gómez Molina", "a": ["OTRI"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "S", "s": "c"}, {"t": "Trámites ambientales ante la ANLA", "d": [{"x": "aspectos básicos para identificar, gestionar y hacer seguimiento a los permisos, licencias, autorizaciones y demás requisitos ambientales que puedan aplicar al desarrollo de proyectos de investigación, especialmente cuando involucren actividades de campo, intervención de recursos naturales o manejo de materiales sujetos a regulación.", "b": false}], "r": "Sergio Gómez Molina", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "c"}, {"t": "Convocatorias y fuentes de financiación para la investigación", "d": [{"x": "orientación para identificar oportunidades de financiación, comprender los requisitos de las convocatorias y fortalecer la formulación de propuestas de investigación. UIGP", "b": false}], "r": "Sergio Gómez Molina", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "c"}, {"t": "Avales institucionales", "d": [{"x": "Socializar a los centros sobre el proceso de avales institucionales para convocatorias nacionales e internacionales.", "b": false}], "r": "Andrea Echeverry", "a": [], "an": "No aplica", "p": "Centros de Investigación", "l": "S", "s": "p"}]}, {"name": "Ejecución", "items": [{"t": "Trámites administrativos en la gestión de proyectos (gestión de proyectos)", "d": [], "r": "Mauricio y Diana", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "c"}, {"t": "Inicio formal de proyectos en los sistemas de inofrmación (gestión de proyectos)", "d": [], "r": "Mauricio y Diana", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "Contratación e interventoría en proyectos de investigación", "d": [{"x": "aspectos básicos para gestionar la contratación de bienes y servicios requeridos durante la ejecución de proyectos, como transporte, alimentación, apoyo logístico y servicios especializados.", "b": false}], "r": "Sergio Gómez Molina", "a": ["Dirección Júridica"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Compras nacionales e internacionales para investigación", "d": [{"x": "ruta y requisitos para adquirir equipos, insumos, materiales y demás bienes necesarios para la ejecución de proyectos, tanto en el ámbito nacional como internacional.", "b": false}], "r": "Sergio Gómez Molina", "a": ["Direción Jurídica", "División Servicios Logísticos"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Vinculación de personal y prestación de servicios en proyectos", "d": [{"x": "alternativas y procedimientos para vincular profesionales, estudiantes de pregrado y posgrado, pasantes y otros apoyos requeridos para el desarrollo de actividades de investigación.", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Talento Humano"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Viáticos, avances y legalización de gastos", "d": [{"x": "procedimiento para solicitar recursos destinados a desplazamientos y actividades del proyecto, así como los requisitos y soportes necesarios para su adecuada legalización.", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Financiera"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "c"}, {"t": "Anticipos y pagos a proveedores", "d": [{"x": "aspectos que debe conocer el investigador para gestionar oportunamente anticipos, facturas y pagos asociados a la adquisición de bienes y servicios del proyecto.", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Financiera"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Trámites presupuestales durante la ejecución del proyecto", "d": [{"x": "ruta para gestionar certificados de disponibilidad presupuestal (CDP), registros presupuestales (CRP) y demás solicitudes necesarias para ejecutar los recursos de investigación.", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Financiera"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "c"}, {"t": "Facturación, cartera y costeo de proyectos", "d": [{"x": "procedimientos relacionados con el registro de contratos, la generación de facturación electrónica, el seguimiento de cartera y el uso de herramientas institucionales para el costeo de proyectos.", "b": false}], "r": "Sergio Gómez Molina", "a": ["División Financiera"], "an": "", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "c"}]}, {"name": "Cierre", "items": [{"t": "Criterios de aceptación y homologación de productos de investigación", "d": [{"x": "Cómo utilizar la tabla de aceptación y homologación para identificar los criterios que debe cumplir cada producto y determinar su reconocimiento. (gestión de proyectos)", "b": false}], "r": "Ana María y Mauricio", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "AS", "s": "c"}, {"t": "Cierre de proyectos en los sistemas de información (Cierre)", "d": [], "r": "Mauricio y Diana", "a": [], "an": "Sin registro", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "A", "s": "p"}, {"t": "Productos resultado de investigación", "d": [{"x": "Tipos y criterios generales de los productos de investigación.", "b": false}], "r": "Ana María", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "J", "s": "c"}, {"t": "Registro de productos en CvLAC y GrupLAC", "d": [{"x": "Cómo registrar y actualizar los productos de investigación en la plataforma ScienTI.", "b": false}], "r": "Ana María", "a": [], "an": "No aplica", "p": "Comunidad Universitaria (Investigadores, estudiantes, grupos y centros)", "l": "JA", "s": "c"}]}]}];
+let _n=0;DATA.forEach(p=>p.subs.forEach(s=>s.items.forEach(i=>{i.id=_n++})));const LV=[['J','Junior'],['A','Asociado'],['S','Senior']],LN={J:'Junior',A:'Asociado',S:'Senior'};
+const SUBT={p:'Elige un subproceso y abre una oferta para ver su responsable, articulación, público y estado.',n:'Qué oferta formativa corresponde a cada nivel dentro de cada proceso.'};
+const NS='http://www.w3.org/2000/svg';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const el=(t,c,x)=>{const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n};
+const plural=n=>n+(n===1?' oferta':' ofertas');
+function linkify(parent,text){text.split(/(https?:\/\/\S+)/).forEach(p=>{if(/^https?:\/\//.test(p)){const a=el('a',null,'ver página');a.href=p;a.target='_blank';a.rel='noopener';parent.append(a)}else if(p)parent.append(p)})}
+function row(dt,dd){const d=el('div');d.append(el('dt',null,dt),dd);return d}
+function ficha(i){
+  const f=el('div','ficha');
+  i.d.forEach(x=>{const p=el('p',x.b?'desc b':'desc');if(x.h)p.append(el('strong',null,x.h+': '));p.append(x.x);f.append(p)});
+  const dl=el('dl');
+  dl.append(row('Responsable',el('dd',i.r?null:'none',i.r||'Sin registro')));
+  const art=el('dd');
+  if(i.a.length)i.a.forEach(t=>{const s=el('div');linkify(s,t);art.append(s)});else{art.className='none';art.textContent=i.an}
+  dl.append(row('Articulación',art));
+  dl.append(row('Público',el('dd',null,i.p)));
+  const st=el('dd','st');st.append(el('i','dot '+i.s),i.s==='c'?'Constituida':'Proyectada');
+  dl.append(row('Estado',st));
+  dl.append(row('Nivel',el('dd',null,[...i.l].map(c=>LN[c]).join(' · '))));
+  f.append(dl);return f;
+}
+function leaf(i,pi,si,occ,sub){
+  const l=el('li','leaf'),d=el('details'),sm=el('summary'),dot=el('i','dot '+i.s),t=el('span');
+  l.dataset.st=i.s;l.dataset.k=i.id+':'+occ;l.dataset.p=pi;l.dataset.pi=pi;l.dataset.si=si;dot.setAttribute('role','img');dot.setAttribute('aria-label',i.s==='c'?'Constituida':'Proyectada');
+  t.append(i.t);if(sub)t.append(el('small',null,sub));
+  sm.append(dot,t);d.append(sm,ficha(i));l.append(d);return l;
+}
+const empty=()=>{const p=el('p','empty','Ninguna oferta con este estado.');p.hidden=true;return p};
+const vp=$('#vp'),board=$('#board'),stage=$('#stage'),svg=$('#links'),zl=$('#zl'),cols=$('#view-p'),mx=$('#view-n');
+let X=0,Y=0,Z=1,view='p',raf,busy=false,touched=false;const state=DATA.map(()=>0);
+
+cols.style.gridTemplateColumns=DATA.map(p=>p.subs.length>2?'1.25fr':'1fr').join(' ');
+DATA.forEach((p,pi)=>{
+  const sec=el('section','proc'),h=el('h2','pnode',p.name);sec.dataset.p=pi;h.dataset.p=pi;h.append(el('small'));sec.append(h);
+  const sr=el('div','subrow');sr.style.setProperty('--n',p.subs.length);sec.append(sr);
+  p.subs.forEach((s,si)=>{
+    const id='p'+pi+'s'+si,b=el('button','oval');b.type='button';b.dataset.p=pi;b.dataset.pi=pi;b.dataset.si=si;b.setAttribute('aria-controls',id);
+    b.append(el('span','on',s.name),el('span','oc'));sr.append(b);
+    const pan=el('div','panel'),ul=el('ul','leaves');pan.id=id;pan.dataset.si=si;
+    s.items.forEach(i=>ul.append(leaf(i,pi,si,0)));pan.append(ul,empty());sec.append(pan);
+    b.onclick=()=>{state[pi]=state[pi]===si?-1:si;show()};
+  });
+  cols.append(sec);
+});
+const bars=n=>{const b=el('span','bars');for(let k=1;k<=3;k++)b.append(el('i',k<=n?'on':''));return b};
+const seen={};mx.append(el('div'));
+LV.forEach(([k,n],li)=>{const h=el('div','mx-h');h.dataset.l=k;h.append(bars(li+1),el('b',null,n),el('small'));mx.append(h)});
+DATA.forEach((p,pi)=>{
+  const r=el('div','mx-r');r.dataset.p=pi;r.append(el('span',null,p.name),el('small'));mx.append(r);
+  LV.forEach(([k])=>{
+    const c=el('div','mx-c'),ul=el('ul','leaves');c.dataset.p=pi;c.dataset.l=k;
+    p.subs.forEach((s,si)=>s.items.forEach(i=>{if(i.l.includes(k)){const o=seen[i.id]||0;seen[i.id]=o+1;ul.append(leaf(i,pi,si,o,s.name))}}));
+    c.append(ul,empty());mx.append(c);
+  });
+});
+
+function show(){
+  $$('.proc').forEach((sec,pi)=>{
+    $$('.oval',sec).forEach((b,si)=>b.setAttribute('aria-expanded',String(state[pi]===si)));
+    $$('.panel',sec).forEach((pan,si)=>pan.hidden=state[pi]!==si);
+  });
+  redraw();
+}
+function apply(f){
+  $$('.chip').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
+  $$('.leaf').forEach(l=>l.hidden=f!=='all'&&l.dataset.st!==f);
+  $$('.proc').forEach((sec,pi)=>{
+    const a=$$('.leaf',sec),v=a.filter(l=>!l.hidden).length,t=f==='all'?plural(a.length):v+' de '+plural(a.length);
+    $('small',sec).textContent=t;$('.mx-r[data-p="'+pi+'"] small').textContent=t;
+    $$('.panel',sec).forEach((pan,si)=>{const q=$$('.leaf',pan),n=q.filter(l=>!l.hidden).length;
+      $('.empty',pan).hidden=n>0;$('.oc',$$('.oval',sec)[si]).textContent=f==='all'?plural(q.length):n+' de '+plural(q.length)});
+  });
+  $$('.mx-c').forEach(c=>$('.empty',c).hidden=$$('.leaf:not([hidden])',c).length>0);
+  $$('.mx-h').forEach(h=>$('small',h).textContent=plural($$('.mx-c[data-l="'+h.dataset.l+'"] .leaf:not([hidden])').length));
+  redraw();
+}
+const cnt={all:$$('#view-p .leaf').length,c:$$('#view-p .leaf[data-st="c"]').length,p:$$('#view-p .leaf[data-st="p"]').length};
+[['all','Todas'],['c','Constituidas'],['p','Proyectadas']].forEach(([k,t])=>{
+  const b=el('button','chip');b.type='button';b.dataset.f=k;
+  if(k!=='all')b.append(el('i','dot '+k));
+  b.append(t+' ',el('b',null,cnt[k]));b.onclick=()=>apply(k);$('#filters').append(b);
+});
+
+/* flechas del mapa (vista Procesos) */
+function mk(n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e}
+function draw(){
+  if(busy)return;svg.replaceChildren();if(view!=='p')return;
+  const S=stage.getBoundingClientRect();
+  const P=e=>{const r=e.getBoundingClientRect();return{l:(r.left-S.left)/Z,r:(r.right-S.left)/Z,t:(r.top-S.top)/Z,b:(r.bottom-S.top)/Z,cx:(r.left-S.left+r.width/2)/Z}};
+  svg.setAttribute('width',stage.offsetWidth);svg.setAttribute('height',stage.offsetHeight);
+  const secs=$$('.proc'),col=secs.map(s=>getComputedStyle(s).getPropertyValue('--acc').trim()),df=mk('defs',{});
+  col.forEach((c,i)=>{const m=mk('marker',{id:'ah'+i,viewBox:'0 0 10 10',refX:'9',refY:'5',markerWidth:'8',markerHeight:'8',orient:'auto'});m.append(mk('path',{d:'M0 0L10 5L0 10z',fill:c}));df.append(m)});
+  svg.append(df);
+  const ln=(x1,y1,x2,y2,i)=>svg.append(mk('line',{x1,y1,x2,y2,stroke:col[i],'marker-end':'url(#ah'+i+')'}));
+  const R=P($('.rootoval')),a=(R.r-R.l)/2,b=(R.b-R.t)/2,cy=R.t+b;
+  secs.forEach((sec,pi)=>{
+    const pb=P($('.pnode',sec)),th=(secs.length>1?140-pi*100/(secs.length-1):90)*Math.PI/180,c=Math.cos(th),s=Math.sin(th);
+    let nx=c/a,ny=s/b;const k=Math.hypot(nx,ny);nx/=k;ny/=k;
+    ln(R.cx+a*c+nx*7,cy+b*s+ny*7,pb.cx,pb.t-3,pi);
+    $$('.oval',sec).forEach((o,si)=>{
+      const r=P(o);ln(r.cx,pb.b+2,r.cx,r.t-3,pi);
+      const pan=$$('.panel',sec)[si];
+      if(state[pi]===si&&pan&&!pan.hidden)ln(r.cx,r.b+2,r.cx,P(pan).t-3,pi);
+    });
+  });
+}
+function redraw(){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw)}
+
+/* tablero: mover y hacer zoom */
+function place(){
+  const w=stage.offsetWidth*Z,h=stage.offsetHeight*Z,vw=vp.clientWidth,vh=vp.clientHeight,m=Math.min(vw,vh)*.2;
+  X=Math.min(vw-m,Math.max(m-w,X));Y=Math.min(vh-m,Math.max(m-h,Y));
+  board.style.transform='translate('+X+'px,'+Y+'px) scale('+Z+')';
+  
+  zl.textContent=Math.round(Z*100)+'%';
+}
+function zoomAt(f,cx,cy){const nz=Math.min(2.5,Math.max(.2,Z*f)),k=nz/Z;X=cx-(cx-X)*k;Y=cy-(cy-Y)*k;Z=nz;place()}
+function fit(){
+  const w=stage.offsetWidth,vw=vp.clientWidth;if(!vw)return;
+  Z=Math.min(1,vw*.86/w);if(vw<720)Z=Math.max(Z,.42);
+  X=(vw-w*Z)/2;Y=20;place();
+}
+const mid=()=>[vp.clientWidth/2,vp.clientHeight/2];
+$('#zi').onclick=()=>{touched=true;zoomAt(1.25,...mid())};$('#zo').onclick=()=>{touched=true;zoomAt(.8,...mid())};$('#zf').onclick=()=>{touched=false;fit()};
+vp.addEventListener('wheel',e=>{
+  e.preventDefault();touched=true;const r=vp.getBoundingClientRect(),k=e.deltaMode===1?16:e.deltaMode===2?vp.clientHeight:1,dx=e.deltaX*k,dy=e.deltaY*k;
+  if(e.ctrlKey||e.metaKey)zoomAt(Math.exp(-Math.max(-100,Math.min(100,dy))*.0018),e.clientX-r.left,e.clientY-r.top);
+  else{X-=dx;Y-=dy;place()}
+},{passive:false});
+vp.addEventListener('scroll',()=>{vp.scrollLeft=0;vp.scrollTop=0});
+const ptr=new Map();let drag=null,pinch=null,moved=false;
+const rel=e=>{const r=vp.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
+const pst=()=>{const[a,b]=[...ptr.values()];return{d:Math.hypot(a.x-b.x,a.y-b.y)||1,x:(a.x+b.x)/2,y:(a.y+b.y)/2}};
+vp.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  if(e.target.closest('.ficha,a'))return;
+  ptr.set(e.pointerId,rel(e));moved=false;
+  if(ptr.size===1){const p=ptr.get(e.pointerId);drag={x:p.x,y:p.y,X,Y}}
+  else if(ptr.size===2){const s=pst();drag=null;moved=true;touched=true;pinch={d:s.d,Z,wx:(s.x-X)/Z,wy:(s.y-Y)/Z}}
+});
+vp.addEventListener('pointermove',e=>{
+  if(!ptr.has(e.pointerId))return;
+  const p=rel(e);ptr.set(e.pointerId,p);
+  if(ptr.size===2&&pinch){const s=pst();Z=Math.min(2.5,Math.max(.2,pinch.Z*s.d/pinch.d));X=s.x-pinch.wx*Z;Y=s.y-pinch.wy*Z;place()}
+  else if(drag&&ptr.size===1){
+    const dx=p.x-drag.x,dy=p.y-drag.y;
+    if(!moved){if(Math.hypot(dx,dy)<5)return;moved=true;touched=true;vp.setPointerCapture(e.pointerId);vp.classList.add('grab')}
+    X=drag.X+dx;Y=drag.Y+dy;place();
+  }
+});
+const up=e=>{
+  ptr.delete(e.pointerId);pinch=null;
+  if(ptr.size===1){const p=[...ptr.values()][0];drag={x:p.x,y:p.y,X,Y}}
+  else if(!ptr.size){drag=null;vp.classList.remove('grab')}
+};
+vp.addEventListener('pointerup',up);vp.addEventListener('pointercancel',up);
+vp.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);
+
+/* menú flotante: Procesos / Niveles */
+function swap(v,keep){
+  view=v;$('#view-p').hidden=v!=='p';$('#view-n').hidden=v!=='n';stage.dataset.v=v;$('#sub').textContent=SUBT[v];
+  $$('.seg').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===v)));
+  if(!keep)fit();redraw();
+}
+const RM=matchMedia('(prefers-reduced-motion:reduce)'),DUR=820,EASE='cubic-bezier(.65,0,.25,1)';
+function snap(){
+  const S=stage.getBoundingClientRect(),o={leaf:new Map(),proc:[],head:[],oval:new Map()};
+  const R=e=>{const r=e.getBoundingClientRect();return{x:(r.left-S.left)/Z,y:(r.top-S.top)/Z,w:r.width/Z,h:r.height/Z}};
+  const vis=e=>e.getClientRects().length>0;
+  $$('.leaf').forEach(l=>{if(vis(l))o.leaf.set(l.dataset.k,{e:l,r:R(l)})});
+  $$(view==='p'?'.pnode':'.mx-r').forEach(e=>o.proc.push({e,r:R(e)}));
+  $$('.mx-h').forEach(e=>{if(vis(e))o.head.push({e,r:R(e)})});
+  $$('.oval').forEach(e=>{if(vis(e))o.oval.set(e.dataset.pi+':'+e.dataset.si,{e,r:R(e)})});
+  return o;
+}
+function morph(v){
+  if(busy||v===view)return;
+  if(RM.matches){swap(v,true);return}
+  busy=true;setTimeout(()=>{busy=false},3500);svg.style.opacity=0;
+  $$('details[open]',stage).forEach(d=>d.open=false);
+  const A=snap();swap(v,true);const B=snap();
+  const layer=el('div','ghosts');layer.setAttribute('aria-hidden','true');board.append(layer);let ended=false;const done=()=>{if(ended)return;ended=true;layer.remove();stage.classList.remove('ghosting');busy=false;redraw();requestAnimationFrame(()=>{svg.style.opacity=1})};setTimeout(done,DUR+900);
+  stage.classList.add('ghosting');
+  const fin=[],C=r=>[r.x+r.w/2,r.y+r.h/2],T=a=>'translate('+a[0]+'px,'+a[1]+'px) scale('+a[2]+')';
+  const put=(src,r)=>{const g=src.cloneNode(true);g.removeAttribute('id');$$('[id]',g).forEach(n=>n.removeAttribute('id'));g.hidden=false;
+    g.style.cssText='left:'+r.x+'px;top:'+r.y+'px;width:'+r.w+'px;height:'+r.h+'px';layer.append(g);return g};
+  const go=(g,a,b,d)=>fin.push(g.animate([{transform:T(a),opacity:a[3]},{transform:T(b),opacity:b[3]}],{duration:DUR,delay:d,easing:EASE,fill:'both'}).finished);
+  const base=k=>k.split(':')[0]+':0';
+  let n=0;
+  B.leaf.forEach((b,k)=>{
+    const exact=A.leaf.get(k),a=exact||A.leaf.get(base(k)),g=put(b.e,b.r),d=Math.min(n++*3,240),[bx,by]=C(b.r);
+    if(a){const [ax,ay]=C(a.r);go(g,[ax-bx,ay-by,1,exact?1:0],[0,0,1,1],d)}
+    else{const o=A.oval.get(b.e.dataset.pi+':'+b.e.dataset.si);
+      if(o){const [ox,oy]=C(o.r);go(g,[ox-bx,oy-by,.25,0],[0,0,1,1],d)}else go(g,[0,0,.7,0],[0,0,1,1],d)}
+  });
+  A.leaf.forEach((a,k)=>{
+    if(B.leaf.has(k))return;
+    const t=B.leaf.get(base(k))||B.oval.get(a.e.dataset.pi+':'+a.e.dataset.si),g=put(a.e,a.r);
+    if(t){const [ax,ay]=C(a.r),[tx,ty]=C(t.r);go(g,[0,0,1,1],[tx-ax,ty-ay,t.e.classList.contains('leaf')?1:.25,0],0)}
+    else go(g,[0,0,1,1],[0,0,.8,0],0);
+  });
+  A.proc.forEach((a,i)=>{
+    const b=B.proc[i];if(!b)return;
+    const [ax,ay]=C(a.r),[bx,by]=C(b.r);
+    go(put(a.e,a.r),[0,0,1,1],[bx-ax,by-ay,1,0],0);go(put(b.e,b.r),[ax-bx,ay-by,1,0],[0,0,1,1],0);
+  });
+  if(v==='n'){
+    A.oval.forEach(a=>go(put(a.e,a.r),[0,0,1,1],[0,0,.6,0],0));
+    B.head.forEach((b,i)=>go(put(b.e,b.r),[0,-26,.85,0],[0,0,1,1],220+i*70));
+  }else{
+    B.oval.forEach(b=>go(put(b.e,b.r),[0,0,.6,0],[0,0,1,1],260));
+    A.head.forEach(a=>go(put(a.e,a.r),[0,0,1,1],[0,-26,.85,0],0));
+  }
+  Promise.allSettled(fin).then(done);
+}
+$$('.seg').forEach(b=>b.onclick=()=>morph(b.dataset.v));
+addEventListener('resize',redraw);
+if(window.ResizeObserver){new ResizeObserver(redraw).observe(stage);new ResizeObserver(()=>{if(!vp.clientWidth)return;if(touched)place();else fit();redraw()}).observe(vp)}
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(redraw);
+apply('all');show();swap('p');
+})();
+</script>
+</body>
+</html>
